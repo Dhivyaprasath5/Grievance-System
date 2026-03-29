@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department Mapping - AI Grievance System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .mapping-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .mapping-card:hover {
+            background: var(--glass-hover);
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .category-pill {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: var(--radius-full);
+            color: #a78bfa;
+            font-size: 0.875rem;
+            margin: 0.25rem;
+        }
+
+        .dept-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar-dark">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center py-3">
+                <a class="navbar-brand" href="index.html">
+                    <strong>🏛️ AI Grievance System</strong>
+                </a>
+                <div class="d-flex gap-4 align-items-center">
+                    <a class="nav-link" href="admin-dashboard.html">Dashboard</a>
+                    <a class="nav-link active" href="department-mapping.html">Dept Mapping</a>
+                    <a class="nav-link" href="analytics.html">Analytics</a>
+                    <button class="btn btn-outline btn-sm" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container" style="padding: 3rem 0; max-width: 1200px;">
+        <div class="dept-header">
+            <div>
+                <h2 class="mb-2">Department Mapping</h2>
+                <p class="text-secondary">Configure how petition categories map to departments</p>
+            </div>
+            <button class="btn btn-gradient" onclick="showAddModal()">+ Add Mapping</button>
+        </div>
+
+        <!-- Mappings List -->
+        <div id="mappingsList"></div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal fade" id="mappingModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Department Mapping</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="mappingForm">
+                        <div class="mb-3">
+                            <label class="form-label">Department</label>
+                            <select class="form-select" id="departmentSelect" required>
+                                <option value="">Select Department</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Category</label>
+                            <select class="form-select" id="categorySelect" required>
+                                <option value="Education">Education</option>
+                                <option value="Healthcare">Healthcare</option>
+                                <option value="Infrastructure">Infrastructure</option>
+                                <option value="Transport">Transport</option>
+                                <option value="Water Supply">Water Supply</option>
+                                <option value="Electricity">Electricity</option>
+                                <option value="Public Safety">Public Safety</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Keywords (comma-separated)</label>
+                            <input type="text" class="form-control" id="keywordsInput"
+                                placeholder="hospital, medical, health">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Priority</label>
+                            <input type="number" class="form-control" id="priorityInput" value="1" min="1">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-gradient" onclick="saveMapping()">Save Mapping</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        let modal;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            checkAuth();
+            modal = new bootstrap.Modal(document.getElementById('mappingModal'));
+            loadDepartments();
+            loadMappings();
+        });
+
+        async function loadDepartments() {
+            try {
+                const result = await api.getDepartments();
+                const select = document.getElementById('departmentSelect');
+
+                result.departments.forEach(dept => {
+                    const option = document.createElement('option');
+                    option.value = dept.id;
+                    option.textContent = dept.name;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading departments:', error);
+            }
+        }
+
+        async function loadMappings() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/dept-mapping/list`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                const result = await response.json();
+                displayMappings(result.mappings || []);
+            } catch (error) {
+                console.error('Error loading mappings:', error);
+                document.getElementById('mappingsList').innerHTML =
+                    '<div class="alert alert-danger">Error loading mappings</div>';
+            }
+        }
+
+        function displayMappings(mappings) {
+            const container = document.getElementById('mappingsList');
+
+            if (mappings.length === 0) {
+                container.innerHTML = `
+                    <div class="glass-card text-center" style="padding: 3rem;">
+                        <h4 class="mb-3">No Mappings Yet</h4>
+                        <p class="text-secondary mb-4">Create your first department mapping to get started</p>
+                        <button class="btn btn-gradient" onclick="showAddModal()">+ Add Mapping</button>
+                    </div>
+                `;
+                return;
+            }
+
+            // Group by department
+            const byDept = {};
+            mappings.forEach(m => {
+                if (!byDept[m.department_name]) {
+                    byDept[m.department_name] = [];
+                }
+                byDept[m.department_name].push(m);
+            });
+
+            let html = '';
+            for (const [deptName, maps] of Object.entries(byDept)) {
+                html += `
+                    <div class="mapping-card">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="mb-0">${deptName}</h5>
+                            <span class="badge bg-secondary">${maps.length} categories</span>
+                        </div>
+                        <div>
+                            ${maps.map(m => `
+                                <span class="category-pill">
+                                    ${m.category}
+                                    <button class="btn btn-sm" style="border:none; background:none; color:inherit; padding:0 0 0 0.5rem;" 
+                                            onclick="deleteMapping(${m.id})">×</button>
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function showAddModal() {
+            document.getElementById('mappingForm').reset();
+            modal.show();
+        }
+
+        async function saveMapping() {
+            const deptId = document.getElementById('departmentSelect').value;
+            const category = document.getElementById('categorySelect').value;
+            const keywords = document.getElementById('keywordsInput').value
+                .split(',').map(k => k.trim()).filter(k => k);
+            const priority = parseInt(document.getElementById('priorityInput').value);
+
+            if (!deptId || !category) {
+                alert('Please select department and category');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/dept-mapping/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getToken()}`
+                    },
+                    body: JSON.stringify({
+                        department_id: parseInt(deptId),
+                        category,
+                        keywords,
+                        priority
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    modal.hide();
+                    loadMappings();
+                    showAlert('Mapping created successfully!', 'success');
+                } else {
+                    showAlert(result.error || 'Error creating mapping', 'danger');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'danger');
+            }
+        }
+
+        async function deleteMapping(id) {
+            if (!confirm('Delete this mapping?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/dept-mapping/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    loadMappings();
+                    showAlert('Mapping deleted', 'success');
+                } else {
+                    showAlert('Error deleting mapping', 'danger');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'danger');
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} fade-in`;
+            alertDiv.style.position = 'fixed';
+            alertDiv.style.top = '20px';
+            alertDiv.style.right = '20px';
+            alertDiv.style.zIndex = '9999';
+            alertDiv.style.minWidth = '300px';
+            alertDiv.textContent = message;
+
+            document.body.appendChild(alertDiv);
+
+            setTimeout(() => alertDiv.remove(), 3000);
+        }
+    </script>
+</body>
+
+</html>

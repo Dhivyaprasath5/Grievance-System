@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Grievance System - Intelligent Petition Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Hero Section */
+        .hero-dark {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-primary);
+        }
+
+        .hero-dark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.125rem, 2vw, 1.5rem);
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            line-height: 1.6;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card-dark {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card-dark:hover {
+            background: var(--glass-hover);
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-8px);
+        }
+
+        .feature-icon-dark {
+            width: 64px;
+            height: 64px;
+            background: var(--accent-gradient);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        /* Stats Section */
+        .stats-dark {
+            padding: 6rem 0;
+            background: var(--bg-secondary);
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .stat-number-dark {
+            font-size: 4rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label-dark {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            font-weight: 500;
+        }
+
+        /* How It Works */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step-card {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .step-number-dark {
+            width: 56px;
+            height: 56px;
+            background: var(--accent-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        /* Footer */
+        .footer-dark {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--glass-border);
+            padding: 3rem 0;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar-dark">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center py-3">
+                <a class="navbar-brand" href="index.html">
+                    <strong>🏛️ AI Grievance System</strong>
+                </a>
+                <div class="d-flex gap-4 align-items-center">
+                    <a class="nav-link active" href="index.html">Home</a>
+                    <a class="nav-link" href="track-petition.html">Track</a>
+                    <a class="nav-link" href="login.html">Login</a>
+                    <a href="register.html" class="btn btn-gradient btn-sm">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-dark">
+        <div class="hero-content">
+            <h1 class="hero-title fade-in-up">
+                <span class="gradient-text">AI-POWERED</span><br>
+                GRIEVANCE SYSTEM
+            </h1>
+            <div class="hero-cta fade-in-up" style="animation-delay: 0.2s;">
+                <a href="register.html" class="btn btn-gradient btn-lg">Submit Petition</a>
+                <a href="track-petition.html" class="btn btn-outline btn-lg">Track Status</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section style="padding: 6rem 0; background: var(--bg-primary);">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="mb-3">POWERFUL FEATURES</h2>
+                <p class="text-secondary" style="font-size: 1.125rem;">Built for efficiency, powered by intelligence</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card-dark fade-in-up">
+                    <div class="feature-icon-dark">🤖</div>
+                    <h4 class="mb-3">AI Classification</h4>
+                    <p class="text-secondary">Automatic categorization using advanced NLP and machine learning
+                        algorithms</p>
+                </div>
+
+                <div class="feature-card-dark fade-in-up" style="animation-delay: 0.1s;">
+                    <div class="feature-icon-dark">⚡</div>
+                    <h4 class="mb-3">Priority Detection</h4>
+                    <p class="text-secondary">Sentiment analysis identifies urgent cases for immediate attention</p>
+                </div>
+
+                <div class="feature-card-dark fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="feature-icon-dark">📊</div>
+                    <h4 class="mb-3">Real-time Tracking</h4>
+                    <p class="text-secondary">Monitor petition status with transparent timeline updates</p>
+                </div>
+
+                <div class="feature-card-dark fade-in-up" style="animation-delay: 0.3s;">
+                    <div class="feature-icon-dark">📈</div>
+                    <h4 class="mb-3">Analytics Dashboard</h4>
+                    <p class="text-secondary">Data-driven insights and trends for better governance</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-number-dark" id="totalPetitions">0</div>
+                        <div class="stat-label-dark">Total Petitions</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-number-dark" id="resolvedPetitions">0</div>
+                        <div class="stat-label-dark">Resolved Cases</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-number-dark" id="avgResolutionTime">0</div>
+                        <div class="stat-label-dark">Avg. Resolution (days)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section style="padding: 6rem 0; background: var(--bg-primary);">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="mb-3">HOW IT WORKS</h2>
+                <p class="text-secondary" style="font-size: 1.125rem;">Simple, efficient, intelligent</p>
+            </div>
+
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number-dark">1</div>
+                    <h5 class="mb-3">Submit Petition</h5>
+                    <p class="text-secondary">Register and submit your grievance with detailed information</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number-dark">2</div>
+                    <h5 class="mb-3">AI Processing</h5>
+                    <p class="text-secondary">Our AI analyzes and categorizes your petition automatically</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number-dark">3</div>
+                    <h5 class="mb-3">Department Review</h5>
+                    <p class="text-secondary">Routed to the relevant department for swift action</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number-dark">4</div>
+                    <h5 class="mb-3">Resolution</h5>
+                    <p class="text-secondary">Receive updates and resolution notifications in real-time</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section style="padding: 6rem 0; background: var(--bg-secondary);">
+        <div class="container text-center">
+            <h2 class="mb-4">READY TO GET STARTED?</h2>
+            <p class="text-secondary mb-4" style="font-size: 1.25rem; max-width: 600px; margin: 0 auto 2rem;">
+                Join thousands of citizens using AI-powered petition management
+            </p>
+            <a href="register.html" class="btn btn-gradient btn-lg">Create Account</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-dark">
+        <div class="container">
+            <p class="text-secondary mb-2">&copy; 2026 AI Grievance System. All rights reserved.</p>
+            <p class="text-muted">Powered by AI & NLP Technology</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // Premium Typewriter Animation
+        function typeWriter(element, text, speed = 100, callback) {
+            let i = 0;
+            element.style.opacity = '1';
+
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            type();
+        }
+
+        // Animate hero text on load
+        window.addEventListener('load', function () {
+            const aiText = document.getElementById('aiText');
+            const grievanceText = document.getElementById('grievanceText');
+
+            // Type "AI-POWERED" first
+            setTimeout(() => {
+                typeWriter(aiText, 'AI-POWERED', 80, () => {
+                    // Then type "GRIEVANCE SYSTEM"
+                    setTimeout(() => {
+                        typeWriter(grievanceText, 'GRIEVANCE SYSTEM', 60, () => {
+                            // Show subtitle and buttons after text is complete
+                            document.querySelector('.hero-subtitle').style.opacity = '1';
+                            document.querySelector('.hero-cta').style.opacity = '1';
+                        });
+                    }, 200);
+                });
+            }, 500);
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function () {
+            const navbar = document.querySelector('.navbar-dark');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Load stats on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            loadStats();
+        });
+
+        async function loadStats() {
+            try {
+                animateNumber('totalPetitions', 1250);
+                animateNumber('resolvedPetitions', 980);
+                animateNumber('avgResolutionTime', 3.5);
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        function animateNumber(id, target) {
+            const element = document.getElementById(id);
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = Math.round(target * 10) / 10;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.round(current);
+                }
+            }, 20);
+        }
+    </script>
+    <style>
+        /* Typewriter cursor effect */
+        .animated-text,
+        .animated-text-white {
+            display: inline-block;
+            opacity: 0;
+            position: relative;
+        }
+
+        .animated-text::after,
+        .animated-text-white::after {
+            content: '|';
+            position: absolute;
+            right: -10px;
+            animation: blink 0.7s infinite;
+        }
+
+        .animated-text-white {
+            color: white;
+        }
+
+        @keyframes blink {
+
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            51%,
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* Smooth fade in for subtitle and buttons */
+        .hero-subtitle,
+        .hero-cta {
+            transition: opacity 0.8s ease;
+        }
+
+        /* Text line animation */
+        .text-line {
+            display: block;
+            overflow: hidden;
+        }
+    </style>
+</body>
+
+</html>
